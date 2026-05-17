@@ -119,13 +119,10 @@ class MDLMEvalHarness(BaseEvalHarness):
         target_len = (l - prompt_index.sum()).item()
         k = torch.randint(1, target_len + 1, (), device=batch.device)
 
-        x = torch.round(
-            torch.linspace(
-                float(k), k + (b - 1) * (target_len / b), steps=b, device=batch.device
-            )
-        ).long()
-        x = ((x - 1) % target_len) + 1
-        assert x.min() >= 1 and x.max() <= target_len
+        x = torch.arange(b, device=batch.device, dtype=torch.float)
+        x = (x * (target_len - 1) / max(b - 1, 1)).long()
+        x = (x % target_len) + 1
+        x = x.clamp(1, target_len)
 
         indices = torch.arange(target_len, device=batch.device).repeat(b, 1)
         is_mask = indices < x.unsqueeze(1)
