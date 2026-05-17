@@ -41,8 +41,8 @@ def sample_tokens(
 
     if margin_confidence:
         sorted_probs, _ = torch.sort(probs, dim=-1, descending=True)
-        top1_probs = sorted_probs[:, 0]
-        top2_probs = sorted_probs[:, 1]
+        top1_probs = sorted_probs[:, :, 0]
+        top2_probs = sorted_probs[:, :, 1]
         confidence = top1_probs - top2_probs
 
     if neg_entropy:
