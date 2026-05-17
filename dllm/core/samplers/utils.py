@@ -79,5 +79,5 @@ def add_gumbel_noise(logits: torch.Tensor, temperature: float) -> torch.Tensor:
         return logits
     logits = logits.to(torch.float64)
     noise = torch.rand_like(logits, dtype=torch.float64)
-    gumbel_noise = (-torch.log(noise)) ** temperature
-    return logits.exp() / gumbel_noise
+    gumbel_noise = (-torch.log(-torch.log(noise))) ** temperature
+    return logits / (gumbel_noise + 1e-30)
