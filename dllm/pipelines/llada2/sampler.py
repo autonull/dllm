@@ -209,7 +209,13 @@ class LLaDA2Sampler(BaseSampler):
                     )
                     high_conf = (conf > threshold) & active_mask[b]
                     if high_conf.sum().item() >= num_to_transfer:
-                        transfer_index[b] = high_conf
+                        conf_filtered = conf.clone()
+                        conf_filtered[~high_conf] = -float("inf")
+                        _, top_idx = torch.topk(
+                            conf_filtered,
+                            k=min(num_to_transfer, high_conf.sum().item()),
+                        )
+                        transfer_index[b, top_idx] = True
                     else:
                         if num_to_transfer > 0 and active_mask[b].any():
                             k = min(num_to_transfer, active_mask[b].sum().item())
@@ -222,7 +228,7 @@ class LLaDA2Sampler(BaseSampler):
                     histories.append(x.clone())
 
                 if eos_early_stop and eos_id is not None:
-                    if (block_slice == eos_id).any():
+                    if (x[:, window_end - block_size : window_end] == eos_id).any():
                         break
 
         if not return_dict:
