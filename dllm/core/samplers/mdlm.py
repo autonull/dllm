@@ -191,7 +191,7 @@ class MDLMSampler(BaseSampler):
 
                 if begin_suppress_tokens is not None and len(begin_suppress_tokens) > 0:
                     for token_id in begin_suppress_tokens:
-                        logits[:, :, token_id] = -torch.inf
+                        logits_with_noise[:, :, token_id] = -torch.inf
 
                 # Per-position confidence used to pick which masks to commit this step
                 if remasking == "low_confidence":
@@ -380,7 +380,7 @@ class MDLMSampler(BaseSampler):
 
                 if begin_suppress_tokens is not None and len(begin_suppress_tokens) > 0:
                     for token_id in begin_suppress_tokens:
-                        logits[:, :, token_id] = -torch.inf
+                        logits_with_noise[:, :, token_id] = -torch.inf
 
                 # Confidence used for choosing which masks to commit this step
                 if remasking == "low_confidence":
