@@ -2,7 +2,6 @@
 reference: https://github.com/ML-GSAI/LLaDA/blob/main/generate.py
 """
 
-import copy
 import math
 from dataclasses import dataclass
 
@@ -376,7 +375,7 @@ class BD3LMSampler(BaseSampler):
                     x_block,
                     attention_mask=attn_block,
                     position_ids=pos_block,
-                    past_key_values=copy.deepcopy(cond_past),
+                    past_key_values=cond_past,
                     use_cache=False,
                 ).logits  # [B, cur_block_len, V]
 
@@ -388,7 +387,7 @@ class BD3LMSampler(BaseSampler):
                         x_block,
                         attention_mask=attn_block,
                         position_ids=pos_block,
-                        past_key_values=copy.deepcopy(uncond_past),
+                        past_key_values=uncond_past,
                         use_cache=False,
                     ).logits  # [B, cur_block_len, V]
 
