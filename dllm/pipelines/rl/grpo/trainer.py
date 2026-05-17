@@ -410,9 +410,7 @@ class DiffuGRPOTrainer(GRPOTrainer):
 
         mean_grouped_rewards = rewards.view(-1, self.num_generations).mean(dim=1)
         std_grouped_rewards = rewards.view(-1, self.num_generations).std(dim=1)
-        is_std_zero = torch.isclose(
-            std_grouped_rewards, torch.zeros_like(std_grouped_rewards)
-        )
+        is_std_zero = std_grouped_rewards < 1e-8
 
         mean_grouped_rewards = mean_grouped_rewards.repeat_interleave(
             self.num_generations, dim=0
