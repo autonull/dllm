@@ -309,11 +309,8 @@ class EditFlowTrainer(transformers.Trainer):
         # Survival = E[sum of true intensities over valid rows]
         # true intensity = w[b] * rate_hat[b, i]
         mask_f = x_mask.float()
-        # L = mask_f.sum(dim=1).clamp_min(1.0)           # [B] number of positions (incl. BOS)
-        L1 = torch.tensor(
-            [len(x1) for x1 in inputs["x1_ids"]], device=device, dtype=torch.float
-        ).clamp_min(1.0)
-        denom = L1 if self.normalize_per_position else torch.ones_like(L1)
+        L = mask_f.sum(dim=1).clamp_min(1.0)  # [B] actual sequence lengths (blanks stripped)
+        denom = L if self.normalize_per_position else torch.ones_like(L)
 
         Lambda_hat = ((sub_rate_hat + del_rate_hat + ins_rate_hat) * mask_f).sum(
             dim=1
