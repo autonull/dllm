@@ -84,7 +84,7 @@ class BaseAlphaScheduler:
         return out.item() if isinstance(t, float) and isinstance(s, float) else out
 
     def weight(self, i: Number) -> Number:
-        # w(t) = - α'(t) / (1 - α(t))
+        # w(t) = -α'(t) / (1 - α(t))
         return -self.alpha_derivative(i) / (1 - self.alpha(i) + 1e-6)
 
     # ---- hooks implemented by subclasses ----
