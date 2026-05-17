@@ -238,7 +238,7 @@ class FastdLLMDreamSampler(BaseSampler):
                     # Threshold-filter within top-k (keep top-1 always, so start from 1)
                     for kk in range(1, current_transfer_tokens):
                         if selected_confidence[0, kk] < threshold:
-                            transfer_index[0, select_index[0, kk]] = False
+                            transfer_index[0, select_index[kk]] = False
 
                     # Safety: never transfer unmasked positions
                     transfer_index &= mask_index
@@ -436,7 +436,7 @@ class FastdLLMDreamSampler(BaseSampler):
                         transfer_index[0, select_index[0]] = True
                         for k in range(1, current_transfer_tokens):
                             if selected_confidence[0, k] < threshold:
-                                transfer_index[0, select_index[0, k]] = False
+                                transfer_index[0, select_index[k]] = False
                         x[:, current_block_start:end][transfer_index] = x_[
                             transfer_index
                         ]
